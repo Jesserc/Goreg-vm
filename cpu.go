@@ -64,12 +64,14 @@ func (c *CPU) execute(instruction uint16) {
 		{
 			literal := (*c).fetch16()
 			(*c).setRegister("r1", literal)
+			return
 		}
 	// Move literal into r2 register
 	case MOV_LIT_R2:
 		{
 			literal := (*c).fetch16()
 			(*c).setRegister("r2", literal)
+			return
 		}
 		// Add register to the register (we add values in r1 and r2 and save in acc register)
 	case ADD_REG_REG:
