@@ -13,21 +13,26 @@ func main() {
 	memory[6] = 3
 
 	cpu := NewCPU(memory)
+
+	fmt.Println() // line space
 	fmt.Printf("Full cpu state before executions: %+v\n\n", cpu)
 
 	cpu.debug()
 
 	fmt.Println() // line space
+	fmt.Println("Step 1")
 
 	cpu.step()
 	cpu.debug()
 
 	fmt.Println() // line space
+	fmt.Println("Step 2")
 
 	cpu.step()
 	cpu.debug()
 
 	fmt.Println() // line space
+	fmt.Println("Step 3")
 
 	cpu.step()
 	cpu.debug()
