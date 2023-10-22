@@ -23,7 +23,7 @@ func main() {
 		fmt.Printf("cpu: %+v\n", cpu)
 	*/
 
-	memory := CreateMemory(256)
+	memory := CreateMemory(20) //256
 	memory[0] = MOV_LIT_R1
 	memory[1] = 0x1234
 	memory[2] = MOV_LIT_R2
@@ -37,5 +37,7 @@ func main() {
 	cpu := NewCPU(memory)
 	cpu.step()
 	cpu.step()
+	cpu.step()
 	fmt.Printf("cpu: %+v\n", cpu)
+	// fmt.Printf("cpu: %#v\n", cpu)
 }

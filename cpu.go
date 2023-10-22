@@ -47,16 +47,16 @@ func (c *CPU) setRegister(name string, value uint16) error {
 }
 
 func (c *CPU) fetch() uint16 {
-	nextInstructionAddress, _ := c.getRegister("ip")
-	instruction := c.memory[nextInstructionAddress]
-	c.setRegister("ip", nextInstructionAddress+1)
+	instructionIndex, _ := c.getRegister("ip")
+	instruction := c.memory[instructionIndex]
+	c.setRegister("ip", instructionIndex+1)
 	return instruction
 }
 
 func (c *CPU) fetch16() uint16 {
-	// nextInstructionAddress, _ := c.getRegister("ip")
-	// instruction := c.memory[nextInstructionAddress]
-	// c.setRegister("ip", nextInstructionAddress+1)
+	// instructionIndex, _ := c.getRegister("ip")
+	// instruction := c.memory[instructionIndex]
+	// c.setRegister("ip", instructionIndex+1)
 	// return instruction
 	return c.fetch()
 }
@@ -78,11 +78,11 @@ func (c *CPU) execute(instruction uint16) {
 		// Add register to the register
 	case ADD_REG_REG:
 		{
-			r1 := (*c).fetch()
-			r2 := (*c).fetch()
+			r1 := (*c).fetch() //2
+			r2 := (*c).fetch() //3
 
-			registerValue1 := c.registers[r1]
-			registerValue2 := c.registers[r2]
+			registerValue1 := c.registers[r1] // 0x1234
+			registerValue2 := c.registers[r2] // 0xabcd
 
 			(*c).setRegister("acc", registerValue1+registerValue2)
 			return
@@ -94,6 +94,32 @@ func (c *CPU) step() {
 	instruction := (*c).fetch()
 	(*c).execute(instruction)
 }
+
+/*
+	EXECUTION STEP {
+		we have 3 instructions at the time of writing this:
+		MOV_LIT_R1  = 0x10
+		MOV_LIT_R2  = 0x11
+		ADD_REG_REG = 0x12,
+		This will be the progression of the state,
+		when we call step() 3 times in `main.go` to execute all 3 implemented instruction this time
+		ip=5, mem[5]=2, acc=0 => ip=6, mem[6]=3, acc=0 => ip=7, mem[6]=3, acc=0x1234+0xabcd
+
+			case ADD_REG_REG:
+					{
+						r1 := (*c).fetch() //2
+						r2 := (*c).fetch() //3
+
+						registerValue1 := c.registers[r1] // 0x1234
+						registerValue2 := c.registers[r2] // 0xabcd
+
+						(*c).setRegister("acc", registerValue1+registerValue2)
+						return
+					}
+	}
+
+
+*/
 
 // type CPU struct {
 // 	memory        memory
@@ -164,20 +190,20 @@ func (c *CPU) step() {
 // }
 
 // func (c *CPU) fetch() uint8 {
-// 	nextInstructionAddress, _ := c.getRegister("ip")
+// 	instructionIndex, _ := c.getRegister("ip")
 
-// 	instruction := uint8(c.memory[nextInstructionAddress])
-// 	(*c).setRegister("ip", nextInstructionAddress+1)
+// 	instruction := uint8(c.memory[instructionIndex])
+// 	(*c).setRegister("ip", instructionIndex+1)
 // 	return instruction
 // }
 
 // func (c *CPU) fetch16() uint16 {
-// 	nextInstructionAddress, _ := c.getRegister("ip")
+// 	instructionIndex, _ := c.getRegister("ip")
 
-// 	// instruction := uint16(c.memory[nextInstructionAddress])
-// 	// instruction := uint16(c.memory[nextInstructionAddress]<<8 | c.memory[nextInstructionAddress] + 1)
-// 	instruction := uint16(c.memory[nextInstructionAddress] | c.memory[nextInstructionAddress] + 1)
-// 	(*c).setRegister("ip", nextInstructionAddress+2)
+// 	// instruction := uint16(c.memory[instructionIndex])
+// 	// instruction := uint16(c.memory[instructionIndex]<<8 | c.memory[instructionIndex] + 1)
+// 	instruction := uint16(c.memory[instructionIndex] | c.memory[instructionIndex] + 1)
+// 	(*c).setRegister("ip", instructionIndex+2)
 // 	return instruction
 // }
 
