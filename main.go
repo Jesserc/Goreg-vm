@@ -35,9 +35,28 @@ func main() {
 	// fmt.Printf("memory: %0x\n", memory)
 
 	cpu := NewCPU(memory)
+	fmt.Printf("Full cpu state before executions: %+v\n\n", cpu)
+
+	cpu.debug()
+
+	fmt.Println() // line space
+
 	cpu.step()
+	cpu.debug()
+
+	fmt.Println() // line space
+
 	cpu.step()
+	cpu.debug()
+
+	fmt.Println() // line space
+
 	cpu.step()
-	fmt.Printf("cpu: %+v\n", cpu)
+	cpu.debug()
+
+	fmt.Println() // line space
+
+	fmt.Printf("Full cpu state after executions: %+v\n\n", cpu)
+
 	// fmt.Printf("cpu: %#v\n", cpu)
 }

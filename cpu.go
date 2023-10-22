@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 type CPU struct {
@@ -93,6 +94,14 @@ func (c *CPU) execute(instruction uint16) {
 func (c *CPU) step() {
 	instruction := (*c).fetch()
 	(*c).execute(instruction)
+}
+
+func (c *CPU) debug() {
+	for _, name := range c.registerNames {
+		registerValue, _ := c.getRegister(name)
+		formattedRegisterValue := fmt.Sprintf("0x%04x", registerValue)
+		fmt.Printf("%v: %v\n", name, formattedRegisterValue)
+	}
 }
 
 /*
