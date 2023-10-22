@@ -1,14 +1,14 @@
 package main
 
-// type memory []byte
-type memory []uint16
+// type Memory []byte
+type Memory []uint16
 
-// func CreateMemory(length int) *memory {
+// func CreateMemory(length int) *Memory {
 // 	// see this function later
-// 	mem := make(memory, length)
+// 	mem := make(Memory, length)
 // 	return &mem
 // }
 
-func CreateMemory(length int) memory {
-	return make(memory, length)
+func CreateMemory(length int) Memory {
+	return make(Memory, length)
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 )
 
 type CPU struct {
@@ -12,27 +11,7 @@ type CPU struct {
 	registerMap   map[string]int
 }
 
-func main() {
-	cpu := NewCPU(make([]uint16, 10))
-	// cpu := NewCPU(make([]uint16, 65535))
-
-	regNames := []string{"ip", "acc", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8"}
-
-	for i, n := range regNames {
-		// i *= 2
-		cpu.setRegister(n, uint16(i))
-		reg, _ := cpu.getRegister(n)
-		fmt.Printf("cpu.getRegister(%v): %v\n", n, reg)
-	}
-
-	fmt.Printf("cpu: %+v\n", cpu)
-	cpu.fetch16()
-	cpu.fetch16()
-	// cpu.execute(0x11)
-	fmt.Printf("cpu: %+v\n", cpu)
-}
-
-func NewCPU(memory []uint16) CPU {
+func NewCPU(memory Memory) CPU {
 	cpu := CPU{
 		memory:        memory,
 		registerNames: []string{"ip", "acc", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8"},
@@ -85,31 +64,35 @@ func (c *CPU) fetch16() uint16 {
 func (c *CPU) execute(instruction uint16) {
 	switch instruction {
 	// Move literal into r1 register
-	case 0x10:
+	case MOV_LIT_R1:
 		{
 			literal := (*c).fetch16()
 			(*c).setRegister("r1", literal)
 		}
 	// Move literal into r2 register
-	case 0x11:
+	case MOV_LIT_R2:
 		{
 			literal := (*c).fetch16()
 			(*c).setRegister("r2", literal)
 		}
 		// Add register to the register
-	case 0x12:
+	case ADD_REG_REG:
 		{
-			r1 := c.fetch()
-			r2 := c.fetch()
+			r1 := (*c).fetch()
+			r2 := (*c).fetch()
 
 			registerValue1 := c.registers[r1]
 			registerValue2 := c.registers[r2]
 
 			(*c).setRegister("acc", registerValue1+registerValue2)
-			// Assuming you want to add registerValue2 to registerValue1 and store the result in register r1
-			// newValue := registerValue1 +
+			return
 		}
 	}
+}
+
+func (c *CPU) step() {
+	instruction := (*c).fetch()
+	(*c).execute(instruction)
 }
 
 // type CPU struct {
