@@ -28,7 +28,19 @@ registerNames: []string{"ip", "acc", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "
 
 Initializes a new CPU with a given memory, set of register names, an empty register map, and a register slice of a specified size.
 
-## 2. Operations:
+#### c. Instruction set:
+
+Only three instructions are defined:
+
+```go
+const (
+	MOV_LIT_R1  = 0x10 // move literal r1 (register)
+	MOV_LIT_R2  = 0x11 // move literal r2 (register)
+	ADD_REG_REG = 0x12 // add register (r1) to register (r2)
+)
+```
+
+## 2. Function Operations:
 
 #### a. Register Operations:
 
