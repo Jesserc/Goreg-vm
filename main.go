@@ -58,5 +58,4 @@ func main() {
 
 	fmt.Printf("Full cpu state after executions: %+v\n\n", cpu)
 
-	// fmt.Printf("cpu: %#v\n", cpu)
 }
