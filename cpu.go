@@ -26,7 +26,28 @@ func NewCPU(memory Memory) CPU {
 	}
 	return cpu
 }
+func (c *CPU) debug() {
+	fmt.Printf("======Printing Registers======\n\n")
 
+	for _, name := range c.registerNames {
+		registerValue, _ := c.getRegister(name)
+		formattedRegisterValue := fmt.Sprintf("0x%04x", registerValue)
+		fmt.Printf("%v: %v\n", name, formattedRegisterValue)
+	}
+}
+func (c *CPU) viewMemoryAt(address uint16) {
+
+	nextEightBytes := make([]uint16, 8) // or 4
+
+	for i := 0; i < 8; i++ {
+		// hexValue := fmt.Sprintf("0x%#04x", (*c).memory[address+uint16(i)])
+		nextEightBytes[i] = (*c).memory[address+uint16(i)]
+		// nextEightBytes[i] = fmt.Sprintf("0x%04x", (*c).memory[address+uint16(i)])
+
+	}
+
+	fmt.Printf("%#04v: %#+04v\n\n", address, nextEightBytes)
+}
 func (c CPU) getRegister(name string) (uint16, error) {
 	for _, regName := range c.registerNames {
 		if regName == name {
@@ -49,31 +70,56 @@ func (c *CPU) setRegister(name string, value uint16) error {
 func (c *CPU) fetch() uint16 {
 	instructionIndex, _ := c.getRegister("ip")
 	instruction := c.memory[instructionIndex]
-	c.setRegister("ip", instructionIndex+1)
+	(*c).setRegister("ip", instructionIndex+1)
 	return instruction
 }
 
 func (c *CPU) fetch16() uint16 {
-	return c.fetch()
+	return (*c).fetch()
 }
 
 func (c *CPU) execute(instruction uint16) {
+
 	switch instruction {
-	// Move literal into r1 register
-	case MOV_LIT_R1:
+	// Move literal into register
+	case MOV_LIT_REG:
 		{
 			literal := (*c).fetch16()
-			(*c).setRegister("r1", literal)
+			register := (*c).fetch() % uint16(len(c.registerNames))
+			// (*c).setRegister("r1", literal)
+			(*c).registers[register] = literal
+
 			return
 		}
-	// Move literal into r2 register
-	case MOV_LIT_R2:
+	// Move register to register
+	case MOV_REG_REG:
 		{
-			literal := (*c).fetch16()
-			(*c).setRegister("r2", literal)
+			registerFrom := (*c).fetch() % uint16(len(c.registerNames))
+			registerTo := (*c).fetch() % uint16(len(c.registerNames))
+			value := (*c).registers[registerFrom]
+
+			(*c).registers[registerTo] = value
 			return
 		}
-		// Add register to the register (we add values in r1 and r2 and save in acc register)
+		// Move register to memory
+	case MOV_REG_MEM:
+		{
+			registerFrom := (*c).fetch() % uint16(len(c.registerNames))
+			address := (*c).fetch16()
+			value := (*c).registers[registerFrom]
+			(*c).memory[address] = value
+			return
+		}
+		// Move memory to register
+	case MOV_MEM_REG:
+		{
+			address := (*c).fetch16()
+			registerTo := (*c).fetch() % uint16(len(c.registerNames))
+			value := (*c).memory[address]
+			(*c).registers[registerTo] = value
+			return
+		}
+	// Add register to the register (we add values in r1 and r2 and save in acc register)
 	case ADD_REG_REG:
 		{
 			r1 := (*c).fetch()
@@ -85,20 +131,24 @@ func (c *CPU) execute(instruction uint16) {
 			(*c).setRegister("acc", registerValue1+registerValue2)
 			return
 		}
+		// Compare literal to the accumulator register, jump if not equal
+	case JUMP_NOT_EQ:
+		{
+			literal := (*c).fetch16()
+			address := (*c).fetch16()
+			acc, _ := (*c).getRegister("acc")
+			if literal != acc {
+				(*c).setRegister("ip", address)
+			}
+			return
+		}
 	}
+
 }
 
 func (c *CPU) step() {
 	instruction := (*c).fetch()
 	(*c).execute(instruction)
-}
-
-func (c *CPU) debug() {
-	for _, name := range c.registerNames {
-		registerValue, _ := c.getRegister(name)
-		formattedRegisterValue := fmt.Sprintf("0x%04x", registerValue)
-		fmt.Printf("%v: %v\n", name, formattedRegisterValue)
-	}
 }
 
 /*

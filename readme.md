@@ -74,6 +74,8 @@ A block comment in `cpu.go` illustrates the sequence of state changes when execu
 
 ## 4. Missing/Incomplete Parts:
 
+- Update this readme for added instructions and modifications
+
 - #### Error Handling:
 
   Error handling could be improved, particularly in the fetch, fetch16, execute, and step methods, where errors are currently ignored on purpose.
