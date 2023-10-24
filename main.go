@@ -27,12 +27,12 @@ func main() {
 	memory[increment()] = ADD_REG_REG
 	memory[increment()] = R1
 	memory[increment()] = R2
-	memory[increment()] = MOV_REG_MEM
+	memory[increment()] = MOV_REG_MEM // move the value in the accumulator register to memory offset 0x14
 	memory[increment()] = ACC
 	memory[increment()] = 0x0014 // 20
-	memory[increment()] = JUMP_NOT_EQ
-	memory[increment()] = 0xbe01
-	memory[increment()] = 0x10 // 42
+	memory[increment()] = JUMP_NOT_EQ // compare the value of the accumulator with `0xbe01` and jump to the start of the program if they're unequal
+	memory[increment()] = 0xffff
+	memory[increment()] = IP // 0
 
 	cpu := NewCPU(memory)
 
